@@ -1,0 +1,61 @@
+[
+    {
+        "id": "d05343606eeb45fd",
+        "type": "tab",
+        "label": "copy sh testing",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "46756442963a30e7",
+        "type": "tab",
+        "label": "Trying",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b573a4b41303e8f0",
+        "type": "debug",
+        "z": "d05343606eeb45fd",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 440,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "07bf512a230c35b7",
+        "type": "inject",
+        "z": "46756442963a30e7",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 550,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    }
+]
