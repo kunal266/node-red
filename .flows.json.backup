@@ -206,7 +206,7 @@
         "id": "c9d5f45de1504c98",
         "type": "tab",
         "label": "FRED server",
-        "disabled": false,
+        "disabled": true,
         "info": ""
     },
     {
@@ -252,6 +252,14 @@
         "info": ""
     },
     {
+        "id": "f48aaeef23605001",
+        "type": "tab",
+        "label": "web app",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "c8c78f4d.679e8",
         "type": "subflow",
         "name": "csvColumnParser",
@@ -281,6 +289,56 @@
             }
         ],
         "env": []
+    },
+    {
+        "id": "0964b369410d0d4e",
+        "type": "mqtt-broker",
+        "name": "bruhhhhh",
+        "broker": "localhost",
+        "port": "1885",
+        "clientid": "",
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "83125750f53cd3fb",
+        "type": "mqtt-broker",
+        "name": "bruh1",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
     },
     {
         "id": "dd969d2656fade9e",
@@ -440,56 +498,6 @@
         "disp": true,
         "width": "6",
         "collapse": false
-    },
-    {
-        "id": "0964b369410d0d4e",
-        "type": "mqtt-broker",
-        "name": "bruhhhhh",
-        "broker": "localhost",
-        "port": "1885",
-        "clientid": "",
-        "usetls": false,
-        "protocolVersion": "4",
-        "keepalive": "60",
-        "cleansession": true,
-        "birthTopic": "",
-        "birthQos": "0",
-        "birthPayload": "",
-        "birthMsg": {},
-        "closeTopic": "",
-        "closeQos": "0",
-        "closePayload": "",
-        "closeMsg": {},
-        "willTopic": "",
-        "willQos": "0",
-        "willPayload": "",
-        "willMsg": {},
-        "sessionExpiry": ""
-    },
-    {
-        "id": "83125750f53cd3fb",
-        "type": "mqtt-broker",
-        "name": "bruh1",
-        "broker": "localhost",
-        "port": "1883",
-        "clientid": "",
-        "usetls": false,
-        "protocolVersion": "4",
-        "keepalive": "60",
-        "cleansession": true,
-        "birthTopic": "",
-        "birthQos": "0",
-        "birthPayload": "",
-        "birthMsg": {},
-        "closeTopic": "",
-        "closeQos": "0",
-        "closePayload": "",
-        "closeMsg": {},
-        "willTopic": "",
-        "willQos": "0",
-        "willPayload": "",
-        "willMsg": {},
-        "sessionExpiry": ""
     },
     {
         "id": "4aea2e4653e969c1",
@@ -675,6 +683,114 @@
         "order": 1,
         "disabled": false,
         "hidden": false
+    },
+    {
+        "id": "a8857356.d49e68",
+        "type": "csv",
+        "z": "c8c78f4d.679e8",
+        "name": "",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": true,
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "d12b5d18.58218"
+            ]
+        ]
+    },
+    {
+        "id": "3b501c89.fa554c",
+        "type": "split",
+        "z": "c8c78f4d.679e8",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "topic",
+        "x": 540,
+        "y": 80,
+        "wires": [
+            [
+                "6dad6ed9.c91f08"
+            ]
+        ]
+    },
+    {
+        "id": "6dad6ed9.c91f08",
+        "type": "function",
+        "z": "c8c78f4d.679e8",
+        "name": "",
+        "func": "if (!context.results) context.results = {}\n\nif (!context.results[msg.topic]) context.results[msg.topic] = []\ncontext.results[msg.topic].push(msg.payload)\nmsg.payload = context.results\n\nif ((msg.originalParts.index === msg.originalParts.count - 1) && (msg.parts.index === msg.parts.count - 1)) {\n    msg.payload = context.results\n    context.results = {}\n    return msg\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 660,
+        "y": 80,
+        "wires": [
+            [
+                "d71e0bef.46647"
+            ]
+        ]
+    },
+    {
+        "id": "d12b5d18.58218",
+        "type": "change",
+        "z": "c8c78f4d.679e8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "originalParts",
+                "pt": "msg",
+                "to": "parts",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 80,
+        "wires": [
+            [
+                "3b501c89.fa554c"
+            ]
+        ]
+    },
+    {
+        "id": "d71e0bef.46647",
+        "type": "change",
+        "z": "c8c78f4d.679e8",
+        "name": "spread",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "$spread(payload)",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 780,
+        "y": 80,
+        "wires": [
+            []
+        ]
     },
     {
         "id": "3d44186621e31e6d",
@@ -1364,6 +1480,7 @@
         "randomUnits": "seconds",
         "drop": false,
         "allowrate": false,
+        "outputs": 1,
         "x": 780,
         "y": 260,
         "wires": [
@@ -1988,6 +2105,7 @@
         "nl": false,
         "rap": true,
         "rh": 0,
+        "inputs": 0,
         "x": 630,
         "y": 460,
         "wires": [
@@ -2093,6 +2211,7 @@
         "nl": false,
         "rap": true,
         "rh": 0,
+        "inputs": 0,
         "x": 710,
         "y": 420,
         "wires": [
@@ -2217,6 +2336,7 @@
         "nl": false,
         "rap": true,
         "rh": 0,
+        "inputs": 0,
         "x": 670,
         "y": 460,
         "wires": [
@@ -2473,6 +2593,7 @@
         "nl": false,
         "rap": true,
         "rh": 0,
+        "inputs": 0,
         "x": 710,
         "y": 460,
         "wires": [
@@ -2578,6 +2699,7 @@
         "nl": false,
         "rap": true,
         "rh": 0,
+        "inputs": 0,
         "x": 710,
         "y": 400,
         "wires": [
@@ -2615,6 +2737,7 @@
         "nl": false,
         "rap": true,
         "rh": 0,
+        "inputs": 0,
         "x": 710,
         "y": 520,
         "wires": [
@@ -2652,6 +2775,7 @@
         "nl": false,
         "rap": true,
         "rh": 0,
+        "inputs": 0,
         "x": 690,
         "y": 360,
         "wires": [
@@ -2757,6 +2881,7 @@
         "nl": false,
         "rap": true,
         "rh": 0,
+        "inputs": 0,
         "x": 690,
         "y": 560,
         "wires": [
@@ -3236,6 +3361,7 @@
         "nl": false,
         "rap": true,
         "rh": 0,
+        "inputs": 0,
         "x": 1310,
         "y": 600,
         "wires": [
@@ -3302,6 +3428,147 @@
         "layout": "row-spread",
         "x": 1510,
         "y": 640,
+        "wires": []
+    },
+    {
+        "id": "43adf891970c9c9b",
+        "type": "mqtt out",
+        "z": "ebb053fb20be421a",
+        "name": "",
+        "topic": "do",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "83125750f53cd3fb",
+        "x": 1030,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "83d258164314c2bf",
+        "type": "mqtt out",
+        "z": "ebb053fb20be421a",
+        "name": "",
+        "topic": "orp",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "83125750f53cd3fb",
+        "x": 1030,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "76e9b7323e6b26ef",
+        "type": "mqtt in",
+        "z": "ebb053fb20be421a",
+        "name": "",
+        "topic": "do/#",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "83125750f53cd3fb",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 550,
+        "y": 580,
+        "wires": [
+            [
+                "efcdc343ba6007de",
+                "967e7b60ce7ddf6b"
+            ]
+        ]
+    },
+    {
+        "id": "57c62dfb13e46538",
+        "type": "mqtt in",
+        "z": "ebb053fb20be421a",
+        "name": "",
+        "topic": "orp/#",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "83125750f53cd3fb",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 550,
+        "y": 500,
+        "wires": [
+            [
+                "baa77af635289120",
+                "967e7b60ce7ddf6b"
+            ]
+        ]
+    },
+    {
+        "id": "ba2712f9090fee05",
+        "type": "mqtt in",
+        "z": "ebb053fb20be421a",
+        "name": "",
+        "topic": "ph/#",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "83125750f53cd3fb",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 530,
+        "y": 240,
+        "wires": [
+            [
+                "850538cb722d719e",
+                "967e7b60ce7ddf6b"
+            ]
+        ]
+    },
+    {
+        "id": "b2c315a0fb5e4846",
+        "type": "aedes broker",
+        "z": "ebb053fb20be421a",
+        "name": "",
+        "mqtt_port": 1883,
+        "mqtt_ws_bind": "port",
+        "mqtt_ws_port": null,
+        "mqtt_ws_path": "",
+        "cert": "",
+        "key": "",
+        "certname": "",
+        "keyname": "",
+        "dburl": "",
+        "usetls": false,
+        "x": 1170,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3c47fca51a522c51",
+        "type": "mqtt out",
+        "z": "ebb053fb20be421a",
+        "name": "",
+        "topic": "ph",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "83125750f53cd3fb",
+        "x": 1010,
+        "y": 220,
         "wires": []
     },
     {
@@ -3442,6 +3709,66 @@
         "wires": [
             [
                 "ec7046adcba8cbe4"
+            ]
+        ]
+    },
+    {
+        "id": "98303be4a4393b92",
+        "type": "debug",
+        "z": "1f921bef89399c18",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1590,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "82b2524fba165168",
+        "type": "e-mail",
+        "z": "1f921bef89399c18",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "secure": true,
+        "tls": true,
+        "name": "hopir43208@datakop.com",
+        "dname": "mail bhej rha hu",
+        "x": 1620,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "ec7046adcba8cbe4",
+        "type": "join",
+        "z": "1f921bef89399c18",
+        "name": "bruh",
+        "mode": "custom",
+        "build": "string",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1370,
+        "y": 300,
+        "wires": [
+            [
+                "82b2524fba165168",
+                "98303be4a4393b92"
             ]
         ]
     },
@@ -3611,66 +3938,6 @@
         "y": 180,
         "wires": [
             []
-        ]
-    },
-    {
-        "id": "98303be4a4393b92",
-        "type": "debug",
-        "z": "1f921bef89399c18",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1590,
-        "y": 400,
-        "wires": []
-    },
-    {
-        "id": "82b2524fba165168",
-        "type": "e-mail",
-        "z": "1f921bef89399c18",
-        "server": "smtp.gmail.com",
-        "port": "465",
-        "secure": true,
-        "tls": true,
-        "name": "hopir43208@datakop.com",
-        "dname": "mail bhej rha hu",
-        "x": 1620,
-        "y": 280,
-        "wires": []
-    },
-    {
-        "id": "ec7046adcba8cbe4",
-        "type": "join",
-        "z": "1f921bef89399c18",
-        "name": "bruh",
-        "mode": "custom",
-        "build": "string",
-        "property": "payload",
-        "propertyType": "msg",
-        "key": "topic",
-        "joiner": "\\n",
-        "joinerType": "str",
-        "accumulate": false,
-        "timeout": "",
-        "count": "2",
-        "reduceRight": false,
-        "reduceExp": "",
-        "reduceInit": "",
-        "reduceInitType": "",
-        "reduceFixup": "",
-        "x": 1370,
-        "y": 300,
-        "wires": [
-            [
-                "82b2524fba165168",
-                "98303be4a4393b92"
-            ]
         ]
     },
     {
@@ -4228,114 +4495,6 @@
         ]
     },
     {
-        "id": "a8857356.d49e68",
-        "type": "csv",
-        "z": "c8c78f4d.679e8",
-        "name": "",
-        "sep": ",",
-        "hdrin": true,
-        "hdrout": "",
-        "multi": "one",
-        "ret": "\\n",
-        "temp": "",
-        "skip": "0",
-        "strings": true,
-        "x": 200,
-        "y": 80,
-        "wires": [
-            [
-                "d12b5d18.58218"
-            ]
-        ]
-    },
-    {
-        "id": "3b501c89.fa554c",
-        "type": "split",
-        "z": "c8c78f4d.679e8",
-        "name": "",
-        "splt": "\\n",
-        "spltType": "str",
-        "arraySplt": 1,
-        "arraySpltType": "len",
-        "stream": false,
-        "addname": "topic",
-        "x": 540,
-        "y": 80,
-        "wires": [
-            [
-                "6dad6ed9.c91f08"
-            ]
-        ]
-    },
-    {
-        "id": "6dad6ed9.c91f08",
-        "type": "function",
-        "z": "c8c78f4d.679e8",
-        "name": "",
-        "func": "if (!context.results) context.results = {}\n\nif (!context.results[msg.topic]) context.results[msg.topic] = []\ncontext.results[msg.topic].push(msg.payload)\nmsg.payload = context.results\n\nif ((msg.originalParts.index === msg.originalParts.count - 1) && (msg.parts.index === msg.parts.count - 1)) {\n    msg.payload = context.results\n    context.results = {}\n    return msg\n}\n",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 660,
-        "y": 80,
-        "wires": [
-            [
-                "d71e0bef.46647"
-            ]
-        ]
-    },
-    {
-        "id": "d12b5d18.58218",
-        "type": "change",
-        "z": "c8c78f4d.679e8",
-        "name": "",
-        "rules": [
-            {
-                "t": "set",
-                "p": "originalParts",
-                "pt": "msg",
-                "to": "parts",
-                "tot": "msg"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 370,
-        "y": 80,
-        "wires": [
-            [
-                "3b501c89.fa554c"
-            ]
-        ]
-    },
-    {
-        "id": "d71e0bef.46647",
-        "type": "change",
-        "z": "c8c78f4d.679e8",
-        "name": "spread",
-        "rules": [
-            {
-                "t": "set",
-                "p": "payload",
-                "pt": "msg",
-                "to": "$spread(payload)",
-                "tot": "jsonata"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 780,
-        "y": 80,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "41d99cd9.ebaab4",
         "type": "subflow:c8c78f4d.679e8",
         "z": "7b11ae5524b65977",
@@ -4497,6 +4656,118 @@
                 "63952197ba01e6ea"
             ]
         ]
+    },
+    {
+        "id": "63952197ba01e6ea",
+        "type": "ui_form",
+        "z": "c9d5f45de1504c98",
+        "name": "",
+        "label": "",
+        "group": "dd969d2656fade9e",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "options": [
+            {
+                "label": "name",
+                "value": "name",
+                "type": "text",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "password",
+                "value": "password",
+                "type": "text",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "name": "",
+            "password": ""
+        },
+        "payload": "",
+        "submit": "submit",
+        "cancel": "cancel",
+        "topic": "topic",
+        "topicType": "msg",
+        "splitLayout": "",
+        "x": 670,
+        "y": 400,
+        "wires": [
+            [
+                "24bde5a255f3d263"
+            ]
+        ]
+    },
+    {
+        "id": "24bde5a255f3d263",
+        "type": "function",
+        "z": "c9d5f45de1504c98",
+        "name": "",
+        "func": "msg.payload= Math.round(Math.random()*60+50);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 400,
+        "wires": [
+            [
+                "5745304c2c8d8666",
+                "d0f0703be23f73f3"
+            ]
+        ]
+    },
+    {
+        "id": "d0f0703be23f73f3",
+        "type": "debug",
+        "z": "c9d5f45de1504c98",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1080,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "94ca2cf2995f9541",
+        "type": "ui_text",
+        "z": "c9d5f45de1504c98",
+        "group": "dd969d2656fade9e",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Your report",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "x": 850,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "f84461ceff0aa896",
+        "type": "ui_text",
+        "z": "c9d5f45de1504c98",
+        "group": "dd969d2656fade9e",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "text",
+        "format": "{{msg.payload.report}}",
+        "layout": "row-spread",
+        "x": 840,
+        "y": 300,
+        "wires": []
     },
     {
         "id": "db9d59c1d1b3344e",
@@ -4870,6 +5141,7 @@
         "randomUnits": "seconds",
         "drop": false,
         "allowrate": false,
+        "outputs": 1,
         "x": 510,
         "y": 520,
         "wires": [
@@ -4947,6 +5219,7 @@
         "randomUnits": "seconds",
         "drop": false,
         "allowrate": false,
+        "outputs": 1,
         "x": 510,
         "y": 600,
         "wires": [
@@ -5071,144 +5344,6 @@
         "wires": [
             []
         ]
-    },
-    {
-        "id": "43adf891970c9c9b",
-        "type": "mqtt out",
-        "z": "ebb053fb20be421a",
-        "name": "",
-        "topic": "do",
-        "qos": "",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "83125750f53cd3fb",
-        "x": 1030,
-        "y": 560,
-        "wires": []
-    },
-    {
-        "id": "83d258164314c2bf",
-        "type": "mqtt out",
-        "z": "ebb053fb20be421a",
-        "name": "",
-        "topic": "orp",
-        "qos": "",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "83125750f53cd3fb",
-        "x": 1030,
-        "y": 480,
-        "wires": []
-    },
-    {
-        "id": "76e9b7323e6b26ef",
-        "type": "mqtt in",
-        "z": "ebb053fb20be421a",
-        "name": "",
-        "topic": "do/#",
-        "qos": "2",
-        "datatype": "auto",
-        "broker": "83125750f53cd3fb",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "x": 550,
-        "y": 580,
-        "wires": [
-            [
-                "efcdc343ba6007de",
-                "967e7b60ce7ddf6b"
-            ]
-        ]
-    },
-    {
-        "id": "57c62dfb13e46538",
-        "type": "mqtt in",
-        "z": "ebb053fb20be421a",
-        "name": "",
-        "topic": "orp/#",
-        "qos": "2",
-        "datatype": "auto",
-        "broker": "83125750f53cd3fb",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "x": 550,
-        "y": 500,
-        "wires": [
-            [
-                "baa77af635289120",
-                "967e7b60ce7ddf6b"
-            ]
-        ]
-    },
-    {
-        "id": "ba2712f9090fee05",
-        "type": "mqtt in",
-        "z": "ebb053fb20be421a",
-        "name": "",
-        "topic": "ph/#",
-        "qos": "2",
-        "datatype": "auto",
-        "broker": "83125750f53cd3fb",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "x": 530,
-        "y": 240,
-        "wires": [
-            [
-                "850538cb722d719e",
-                "967e7b60ce7ddf6b"
-            ]
-        ]
-    },
-    {
-        "id": "b2c315a0fb5e4846",
-        "type": "aedes broker",
-        "z": "ebb053fb20be421a",
-        "name": "",
-        "mqtt_port": 1883,
-        "mqtt_ws_bind": "port",
-        "mqtt_ws_port": null,
-        "mqtt_ws_path": "",
-        "cert": "",
-        "key": "",
-        "certname": "",
-        "keyname": "",
-        "dburl": "",
-        "usetls": false,
-        "x": 1170,
-        "y": 160,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "3c47fca51a522c51",
-        "type": "mqtt out",
-        "z": "ebb053fb20be421a",
-        "name": "",
-        "topic": "ph",
-        "qos": "",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "83125750f53cd3fb",
-        "x": 1010,
-        "y": 220,
-        "wires": []
     },
     {
         "id": "64fe9b337f57b919",
@@ -6390,115 +6525,195 @@
         "wires": []
     },
     {
-        "id": "63952197ba01e6ea",
-        "type": "ui_form",
-        "z": "c9d5f45de1504c98",
+        "id": "1e0841f1.ac68fe",
+        "type": "http in",
+        "z": "f48aaeef23605001",
         "name": "",
-        "label": "",
-        "group": "dd969d2656fade9e",
-        "order": 5,
-        "width": 0,
-        "height": 0,
-        "options": [
-            {
-                "label": "name",
-                "value": "name",
-                "type": "text",
-                "required": true,
-                "rows": null
-            },
-            {
-                "label": "password",
-                "value": "password",
-                "type": "text",
-                "required": true,
-                "rows": null
-            }
-        ],
-        "formValue": {
-            "name": "",
-            "password": ""
-        },
-        "payload": "",
-        "submit": "submit",
-        "cancel": "cancel",
-        "topic": "topic",
-        "topicType": "msg",
-        "splitLayout": "",
-        "x": 670,
-        "y": 400,
+        "url": "/mysite",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 370,
+        "y": 320,
         "wires": [
             [
-                "24bde5a255f3d263"
+                "4c783328.03dc2c"
             ]
         ]
     },
     {
-        "id": "24bde5a255f3d263",
-        "type": "function",
-        "z": "c9d5f45de1504c98",
+        "id": "5de0bbd4.6c8574",
+        "type": "http in",
+        "z": "f48aaeef23605001",
         "name": "",
-        "func": "msg.payload= Math.round(Math.random()*60+50);\nreturn msg;",
+        "url": "/mysitepost",
+        "method": "post",
+        "swaggerDoc": "",
+        "x": 390,
+        "y": 520,
+        "wires": [
+            [
+                "80321000.f2dc5",
+                "75913f37.78e6e"
+            ]
+        ]
+    },
+    {
+        "id": "4c783328.03dc2c",
+        "type": "function",
+        "z": "f48aaeef23605001",
+        "name": "msg.url = \"mysitepost\";",
+        "func": "msg.url = \"mysitepost\";\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 900,
-        "y": 400,
+        "x": 610,
+        "y": 320,
         "wires": [
             [
-                "5745304c2c8d8666",
-                "d0f0703be23f73f3"
+                "b2f5bdf9.e09f1"
             ]
         ]
     },
     {
-        "id": "d0f0703be23f73f3",
+        "id": "80321000.f2dc5",
         "type": "debug",
-        "z": "c9d5f45de1504c98",
-        "name": "",
+        "z": "f48aaeef23605001",
+        "name": "mysitepost",
         "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1080,
-        "y": 320,
+        "console": "false",
+        "complete": "payload",
+        "x": 1030,
+        "y": 520,
         "wires": []
     },
     {
-        "id": "94ca2cf2995f9541",
-        "type": "ui_text",
-        "z": "c9d5f45de1504c98",
-        "group": "dd969d2656fade9e",
-        "order": 6,
-        "width": 0,
-        "height": 0,
+        "id": "8de9647.b8a9a98",
+        "type": "http response",
+        "z": "f48aaeef23605001",
         "name": "",
-        "label": "Your report",
-        "format": "{{msg.payload}}",
-        "layout": "col-center",
-        "x": 850,
+        "x": 1050,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "b2972258.ecf54",
+        "type": "template",
+        "z": "f48aaeef23605001",
+        "name": "CSS",
+        "field": "payload.style",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "input[type=text], select {\n    width: 100%;\n    padding: 12px 20px;\n    margin: 8px 0;\n    display: inline-block;\n    border: 1px solid #ccc;\n    border-radius: 4px;\n    box-sizing: border-box;\n}\n\ninput[type=submit] {\n    width: 100%;\n    background-color: #4CAF50;\n    color: white;\n    padding: 14px 20px;\n    margin: 8px 0;\n    border: none;\n    border-radius: 4px;\n    cursor: pointer;\n}\n\ninput[type=submit]:hover {\n    background-color: #45a049;\n}\n\ndiv {\n    border-radius: 5px;\n    background-color: #f2f2f2;\n    padding: 20px;\n}",
+        "x": 770,
+        "y": 420,
+        "wires": [
+            [
+                "f3b55ea2.f4d51"
+            ]
+        ]
+    },
+    {
+        "id": "b2f5bdf9.e09f1",
+        "type": "template",
+        "z": "f48aaeef23605001",
+        "name": "JavaScript",
+        "field": "payload.script",
+        "fieldType": "msg",
+        "format": "javascript",
+        "syntax": "plain",
+        "template": "$(document).ready(function(e) {\n    \n    $(\"form[ajax=true]\").submit(function(e) {\n        \n        e.preventDefault();\n        \n        var form_data = $(this).serialize();\n        var form_url = $(this).attr(\"action\");\n        var form_method = $(this).attr(\"method\").toUpperCase();\n        \n        $(\"#loadingimg\").show();\n        \n        $.ajax({\n            url: form_url, \n            type: form_method,      \n            data: form_data,     \n            cache: false,\n            success: function(returnhtml){                          \n                $(\"#result\").html(returnhtml); \n                $(\"#loadingimg\").hide();                    \n            }           \n        });    \n        \n    });\n    \n});",
+        "x": 610,
+        "y": 420,
+        "wires": [
+            [
+                "b2972258.ecf54"
+            ]
+        ]
+    },
+    {
+        "id": "d2c0bc2a.05a02",
+        "type": "http response",
+        "z": "f48aaeef23605001",
+        "name": "",
+        "x": 1050,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "f3b55ea2.f4d51",
+        "type": "template",
+        "z": "f48aaeef23605001",
+        "name": "HTML",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<html>\n  <head>\n    <title>My Site</title>\n    <meta name=\"viewport\" content=\"initial-scale=1.0, user-scalable=no\">\n    <meta charset=\"utf-8\">\n    <script src=\"http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js\"></script>\n    <style>{{{payload.style}}}</style>\n  </head>\n  \n\n    <h2>Using CSS to style an HTML form with AJAX POST and Node-RED</h2>\n    <h4><a href=\"http://www.internetoflego.com\">Internet of LEGO</a></h4>\n\n<div>\n  <form method=\"post\" action=\"/{{url}}\" ajax=\"true\">\n    <label for=\"fname\">First Name</label>\n    <input type=\"text\" id=\"fname\" name=\"firstname\">\n\n    <label for=\"lname\">Last Name</label>\n    <input type=\"text\" id=\"lname\" name=\"lastname\">\n\n    <label for=\"country\">Country</label>\n    <select id=\"country\" name=\"country\">\n      <option value=\"uk\">United Kingdom</option>\n      <option value=\"canada\">Canada</option>\n      <option value=\"usa\">USA</option>\n    </select>\n  \n    <input type=\"submit\" value=\"Submit\">\n  </form>\n</div>\n<div>\n    <span id=\"result\"></span>\n</div>\n\n</body>\n</html>\n<script>{{{payload.script}}}</script>",
+        "x": 910,
+        "y": 420,
+        "wires": [
+            [
+                "d2c0bc2a.05a02"
+            ]
+        ]
+    },
+    {
+        "id": "57316751.8bd948",
+        "type": "comment",
+        "z": "f48aaeef23605001",
+        "name": "Login Form",
+        "info": "",
+        "x": 570,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "ad88b28c.bc842",
+        "type": "function",
+        "z": "f48aaeef23605001",
+        "name": "return msg.payload to client",
+        "func": "msg.payload = 'The following data was submitted and available in the msg.payload: '+msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 780,
+        "y": 480,
+        "wires": [
+            [
+                "8de9647.b8a9a98"
+            ]
+        ]
+    },
+    {
+        "id": "75913f37.78e6e",
+        "type": "json",
+        "z": "f48aaeef23605001",
+        "name": "",
+        "x": 590,
+        "y": 480,
+        "wires": [
+            [
+                "ad88b28c.bc842"
+            ]
+        ]
+    },
+    {
+        "id": "86c08a83.385758",
+        "type": "comment",
+        "z": "f48aaeef23605001",
+        "name": "Website",
+        "info": "",
+        "x": 350,
         "y": 240,
         "wires": []
     },
     {
-        "id": "f84461ceff0aa896",
-        "type": "ui_text",
-        "z": "c9d5f45de1504c98",
-        "group": "dd969d2656fade9e",
-        "order": 7,
-        "width": 0,
-        "height": 0,
-        "name": "",
-        "label": "text",
-        "format": "{{msg.payload.report}}",
-        "layout": "row-spread",
-        "x": 840,
-        "y": 300,
+        "id": "111485fa.14c4aa",
+        "type": "comment",
+        "z": "f48aaeef23605001",
+        "name": "Form Submission",
+        "info": "",
+        "x": 380,
+        "y": 460,
         "wires": []
     }
 ]
